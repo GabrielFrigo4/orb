@@ -67,4 +67,4 @@ A capability-based micro-kernel runtime for Lua 5.5, built in Rust.
 
 ## 🤝 Contributing
  * Gabriel Frigo
- * Felipe
+ * Felipe Junqueira
