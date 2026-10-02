@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -e
+
+git diff --check --cached
+
+# Check index file modes
+if git diff --cached --summary | grep -q 'mode change 100644 => 100755'; then
+    echo "Warning: File mode changed to executable"
+fi
+
+npx prettier --check "**/*.md"
