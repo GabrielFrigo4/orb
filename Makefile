@@ -40,9 +40,9 @@ format: rustfmt prettier
 prettier:
 	echo "🎨 Formatando arquivos com Prettier..."
 	if command -v prettier > "/dev/null" 2>&1; then \
-		prettier --write "**/*.{md,json,yml,yaml}" 2> "/dev/null" || true; \
+		prettier --write "**/*.{md,json,jsonc,yml,yaml,html,css}" 2> "/dev/null" || true; \
 	elif command -v npx > "/dev/null" 2>&1; then \
-		npx --yes prettier --write "**/*.{md,json,yml,yaml}" 2> "/dev/null" || true; \
+		npx --yes prettier --write "**/*.{md,json,jsonc,yml,yaml,html,css}" 2> "/dev/null" || true; \
 	fi
 
 rustfmt:
@@ -54,9 +54,9 @@ rustfmt:
 lint:
 	echo "🔍 Validando formatação com Prettier..."
 	if command -v prettier > "/dev/null" 2>&1; then \
-		prettier --check "**/*.{md,json,yml,yaml}"; \
+		prettier --check "**/*.{md,json,jsonc,yml,yaml,html,css}"; \
 	elif command -v npx > "/dev/null" 2>&1; then \
-		npx --yes prettier --check "**/*.{md,json,yml,yaml}"; \
+		npx --yes prettier --check "**/*.{md,json,jsonc,yml,yaml,html,css}"; \
 	fi
 	if [ -f Cargo.toml ] && command -v cargo > "/dev/null" 2>&1; then \
 		cargo clippy -- -D warnings 2> "/dev/null" || cargo check 2> "/dev/null" || true; \
