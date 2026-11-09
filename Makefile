@@ -78,5 +78,7 @@ ci: lint
 	echo "✅ Quality Gate CI concluído com sucesso!"
 
 clean:
-	rm -rf target/
+	echo "🧹 Limpando artefatos de compilação, caches e .venv..."
+	rm -rf target/ .venv
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2> "/dev/null" || true
 	echo "✅ Workspace limpo!"
