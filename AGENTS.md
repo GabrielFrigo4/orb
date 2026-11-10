@@ -1,94 +1,73 @@
-# 🤖 Orb Kernel — AI Agent Briefing
+# 🤖 AI Agent Briefing
 
-> Micro-kernel assíncrono projetado em Rust para orquestrar trabalhadores leves em Lua 5.5+, com isolamento baseado em capacidades e I/O não-bloqueante nativo.
-
----
-
-## 🧭 Identidade e Papel
-
-O **Orb** é um micro-kernel assíncrono projetado em Rust para orquestrar trabalhadores leves em Lua 5.5+, com isolamento baseado em capacidades (Capabilities YAML) e I/O não-bloqueante nativo (`io_uring`, `kqueue`, `IOCP`).
-
-- **Stack Primária:** Rust (Async runtime), Lua 5.5+, POSIX.1-2024 / BSD / Linux / Windows
-- **Foco:** Baixa latência, paralelismo real, segurança por capabilities declarativas e FFI sem overhead
+> Diretrizes canônicas, invariantes de engenharia, governança autônoma e protocolo operacional para agentes de inteligência artificial em repositórios do ecossistema.
 
 ---
 
-## 📁 Estrutura Canônica de Arquivos
+## 🧭 Identidade & Fonte de Contexto
 
-```text
-Orb Kernel/
-├── Learn/                     # Material de estudo e especificações conceituais
-├── .agents/                   # Governança e runbooks locais de IA
-├── AGENTS.md                  # Constituição e briefing para agentes de IA
-├── LICENSE                    # Licença MIT
-├── Makefile                   # Orquestrador POSIX silencioso
-├── PRINCIPLES.md              # 22 Princípios de Engenharia aplicados
-├── README.md                  # Documentação arquitetural do micro-kernel
-└── TODO.md                    # Roadmap de evolução técnica
-```
+Todo agente de IA que atua neste repositório deve ancorar suas decisões na documentação canônica local antes de executar qualquer alteração. Consulte rigorosamente nesta ordem:
+
+1. [README.md](README.md) — Arquitetura, stack técnica, topologia de diretórios e comandos operacionais específicos do repositório.
+2. [TODO.md](TODO.md) — Matriz de status operacional, cobertura de implementação e roadmap de engenharia.
+3. [PRINCIPLES.md](PRINCIPLES.md) — Os 22 Princípios de Engenharia UNIX e diretrizes estritas de Clean Code.
+4. [CONTRIBUTING.md](CONTRIBUTING.md) — Fluxo Git soberano, convenção de commits semânticos e qualidade local.
+5. `ENVIRONMENT.md` — Arquitetura federada do ecossistema (quando presente na raiz do repositório, como no hub `Environment` e seus submódulos centrais).
 
 ---
 
-## ⚠️ Regras Críticas para Agentes de IA
+## 🤝 Protocolo Bidirecional de Esclarecimento Proativo
 
-1. **Separação Kernel / Userland:** O micro-kernel Rust gerencia hardware, concorrência e IPC; a lógica de aplicação vive nos scripts Lua dos trabalhadores.
-2. **Invariante Hermetismo de Produção:** O runtime do Orb nunca depende de `.agents/`. A deleção de `.agents/` deixa o repositório 100% autônomo.
-3. **Invariante Out-of-the-Box:** Modos octais canônicos no Git Index (`0755` para scripts/hooks, `0644` para fontes e documentação).
-4. **Segurança por Capabilities:** Nenhuma rotina Lua deve acessar I/O ou recursos sem declaração explícita no manifesto de capacidades.
-5. **Zero Cruft:** Proibição de bibliotecas pesadas e dependências fantasmas.
-6. **Commits Semânticos:** Mensagens padronizadas no formato `<type>(<scope>): <descrição>`.
+A autonomia operacional do agente é guiada pelo princípio de alinhamento contínuo: nunca assuma silenciosamente suposições ambíguas.
 
----
+### 🏛️ Alinhamento Socrático (Master -> User)
 
-## 🛡️ Regra da Proatividade e Correção Contínua (Boy Scout Rule)
+Qualquer ambiguidade, inconsistência de requisitos, trade-off arquitetural crítico ou especificação incompleta DEVE ser esclarecido proativamente com o usuário via `ask_question` antes do início da execução em massa. É expressamente proibido adotar suposições silenciosas sobre escopo ou tomar ações destrutivas sem validação prévia.
 
-O agente de IA atua de forma proativa na manutenção e aplicação dos padrões canônicos deste repositório.
+### ⚡ Escalonamento de Subagentes (Worker -> Master)
 
-Ao identificar linhas ou artefatos fora dos padrões estabelecidos:
-
-1. **Notificar concisamente** o usuário sobre o ajuste realizado.
-2. **Corrigir a inconformidade**, aplicando o padrão correspondente:
-    - **Comentários Narrativos:** Eliminar comentários óbvios que apenas narram código executável.
-    - **Banners Estruturais:** Ajustar réguas para exatamente 64 hífens no topo ou 32 caracteres com `### ` no corpo (ou 64 `=` em `.gitignore`), com títulos sempre em MAIÚSCULO.
-    - **Portabilidade POSIX:** Substituir bashismos (`[[ ]]`, `&>`, arrays, `source`) por sintaxe estrita POSIX `/bin/sh`.
-    - **Shebang Universal:** Garantir sempre `#!/usr/bin/env sh` ou `#!/usr/bin/env python3`.
-    - **Sequências ANSI & Escapes:** Não use octais (`\033`, `\001`) para caracteres ou escapes. Use `[ -t 1 ] && echo -n $'\e...'` ou notação hexadecimal (`\x01`, `\x1b`). Octal é exclusivo para permissões POSIX (`chmod 0755`, `chmod 0644`, `umask`).
-    - **Redirecionamento Seguro:** Envolver destinos em aspas duplas (ex: `> "/dev/null" 2>&1`).
-    - **Makefiles:** Assegurar cabeçalho `.POSIX: .SILENT:`, `MAKEFLAGS += --no-print-directory -s`, alinhamento estético de variáveis e zero `@` redundante.
-    - **Permissões Canônicas:** Aplicar 4 dígitos octais (`chmod 0755`, `chmod 0644`, `chmod 0700`, `chmod 0600`).
-    - **Invariante Out-of-the-Box:** Garantir modos octais corretos no Git Index e auto-cura em tempo de execução sem requerer intervenção manual pós-clone.
-    - **Emissão Semântica de UI:** Substituir `echo` avulsos com emojis pelas rotinas canônicas `_ui_*`.
-    - **Antifragilidade & Resiliência:** Resolução ativa de caminhos em cascata, auto-cura de permissões (0600 em chaves/segredos) e validação defensiva de pré-requisitos.
-    - **Curadoria Cognitiva:** Capturar decisões estruturais e regras tácitas em skills locais compactas (`.agents/skills/`), mantendo-as atualizadas e expurgando ruído obsoleto.
-    - **Refatoração Sem Legado:** Expurgar aliases obsoletos, variáveis mortas e shims de compatibilidade em renomeações.
-    - **Elevação Antifrágil & Shift Seguro:** Usar o bloco explícito `if [ "$(id -u)" -ne 0 ]` para resolução de `ELEVATE` (evitando término fatal sob `set -e` como root) e proteger todo comando `shift` com validação prévia de parâmetros (`[ "$#" -ge N ] && shift N`).
-    - **Simetria de Documentação:** Mover regras ou invariantes universais documentadas erroneamente em sub-membros específicos para o documento de arquitetura do grupo correspondente, eliminando falsas assimetrias.
+Subagentes de execução que identificarem qualquer dúvida de escopo, divergência entre especificação e código real, ou risco de efeito colateral inesperado DEVEM interromper a mutação de arquivos e questionar imediatamente o agente orquestrador pai via `send_message`.
 
 ---
 
-## 🚀 Comandos de Verificação Rápida (Quality Gates)
+## ⚠️ Regras Críticas & Invariantes Soberanas
 
-| Comando         | Finalidade Operacional                              |
-| :-------------- | :-------------------------------------------------- |
-| `make help`     | Exibe o menu interativo com alvos disponíveis       |
-| `make format`   | Formata fontes Rust (rustfmt) e Markdown (Prettier) |
-| `make rustfmt`  | Formata fontes Rust com rustfmt                     |
-| `make prettier` | Formata arquivos Markdown com Prettier              |
-| `make lint`     | Valida conformidade de formatação                   |
-| `make hooks`    | Ativa os githooks locais com permissões `0755`      |
-| `make ci`       | Executa pipeline de validação de qualidade          |
-| `make clean`    | Remove diretórios temporários e caches              |
+1. **Soberania e Isolamento de Repositórios OSS (`**/OSS/**`):** Projetos de terceiros sob diretórios `OSS/` são estritamente somente-leitura para operações globais, templates, formatação ou auditoria, só podendo ser editados sob ordem explícita e nominal do usuário e seguindo as regras do upstream.
+2. **Desacoplamento Bancada vs. Produção & Zero-Dirty Invariant:** Nunca edite clones de produção diretamente (`~/.local/share/*`, `~/.config/*`, `~/.emacs.d`, etc.). Edite exclusivamente na bancada em `~/Documents/`, valide localmente (`make test`, `make ci`), comite e envie via `git push`. A produção recebe atualizações exclusivamente via `git pull` e DEVE manter `git status` 100% limpo a todo momento (Invariante Zero-Dirty).
+3. **Hermetismo de Produção (`rm -rf .agents`):** O ecossistema é soberano e independente de ferramentas de IA. Código de produção (scripts, Makefiles, hooks, dotfiles, compiladores) não depende de `.agents/` ou `skills/`. Se o diretório `.agents/` for deletado, o repositório opera com 100% de sua integridade.
+4. **Invariante Out-of-the-Box (`0755` / `0644` / `0700` / `0600`):** O repositório deve funcionar imediatamente após um simples `git clone`, sem etapas manuais pós-clone. Permissões octais canônicas devem estar registradas no Git Index (`0755` para executáveis/scripts/hooks, `0644` para arquivos de configuração e documentação, `0700`/`0600` para Vault e chaves). Scripts devem aplicar self-healing de permissões em tempo de execução.
+5. **Taxonomia Tripartite de Comentários:** O código adota estritamente três categorias:
+    - _Comentários de Sistema:_ PERMITIDOS (shebangs, pragmas, linters).
+    - _Comentários Estruturais de 64/32 colunas:_ PERMITIDOS (cabeçalhos de 64 `-` `# ----------------------------------------------------------------`, seções de 32 colunas `### ================================` e `### --------------------------------` com títulos em MAIÚSCULO, réguas de 64 `=` em `.gitignore` `# ================================================================` com títulos em MAIÚSCULO, sem vazamento lateral).
+    - _Comentários Explicativos/Narrativos:_ PROIBIDOS em código, arquivos de configuração e blocos de código dentro de Markdowns.
+6. **Portabilidade POSIX, Makefiles Silenciosos & Boy Scout Rule:**
+    - Sintaxe estrita POSIX `/bin/sh` (`#!/usr/bin/env sh`, sem bashismos).
+    - Makefiles silenciosos com `.POSIX: .SILENT:`, `MAKEFLAGS += --no-print-directory -s`, subshells `(cd dir && $(MAKE))` e zero `@` redundante.
+    - Sequências ANSI via `$'\e'` ou notação hexadecimal `\x1b` (nunca octal `\033`).
+    - Redirecionamento seguro envolvendo destinos em aspas duplas (ex: `> "/dev/null" 2>&1`).
+    - Refatoração Clean-Break sem legado (expurgar shims, aliases obsoletos e variáveis mortas).
+    - Simetria de escopo e não-assimetria de subgrupo na documentação.
+    - Emissão semântica de UI via rotinas canônicas `_ui_*`.
+    - **Boy Scout Rule:** Ao identificar qualquer inconformidade com os padrões estabelecidos, notifique concisamente o usuário e aplique a correção de forma proativa.
+
+---
+
+## 🚀 Comandos Canônicos de Verificação (Quality Gates)
+
+| Comando       | Finalidade Operacional                                           |
+| :------------ | :--------------------------------------------------------------- |
+| `make help`   | Exibe o catálogo interativo de comandos disponíveis              |
+| `make test`   | Executa a suíte automatizada de testes locais                    |
+| `make audit`  | Executa as suítes de auditoria estática de padrões e integridade |
+| `make format` | Formata código-fonte e documentações com Prettier e linters      |
+| `make ci`     | Executa a pipeline local completa de validação integrada         |
+| `make hooks`  | Configura e ativa os ganchos Git com permissões canônicas (0755) |
 
 ---
 
 ## 📖 Referências Obrigatórias
 
-Antes de qualquer modificação neste ecossistema, consulte:
-
-- [README.md](README.md) — Documentação arquitetural do micro-kernel
-- [Learn/Objetivo.md](Learn/Objetivo.md) — Objetivo e visão do micro-kernel
+- [README.md](README.md) — Visão geral, arquitetura e stack técnica
+- [TODO.md](TODO.md) — Roadmap de tarefas e matriz de cobertura
 - [PRINCIPLES.md](PRINCIPLES.md) — Os 22 Princípios de Engenharia Soberanos
-- [TODO.md](TODO.md) — Roadmap de evolução técnica
-- [LICENSE](LICENSE) — Licença MIT
-- [.agents/rules/principles.md](.agents/rules/principles.md) — Regra de Princípios
-- [.agents/skills/orb-async-kernel/SKILL.md](.agents/skills/orb-async-kernel/SKILL.md) — Runbook do Micro-Kernel Assíncrono
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Guia de contribuição, fluxo Git e convenções
