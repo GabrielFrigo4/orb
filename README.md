@@ -44,13 +44,8 @@ Orb fills the gap between rigid systems languages and heavy monolithic runtimes.
 ## 🚀 Quick Start
 
 ```bash
-# Install Orb
 cargo install orb-cli
-
-# Create a new universe
 orb new my-api
-
-# Define your spheres in orb.yaml and run
 orb start
 ```
 
